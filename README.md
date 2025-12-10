@@ -24,8 +24,9 @@ you might want to use this tool in combination with other privacy tools like uBl
 [x] Block consent pop-ups
 [x] Custom styles for elements
 [ ] Support for more browsers
-[ ] predefined rules for popular cookie consent managers
+[x] predefined rules for popular cookie consent managers
 [ ] Option to select elements by mouse click
+[ ] debug specific pages: e.g. bild.de detects this script? and breaks the page, defaulting to a white page
 
 ## Predefined rules for popular cookie consent managers
 ### Sourcepoint
