@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consent Free</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Consent Free</h1>
+      <p class="domain" id="currentDomain">Loading...</p>
+    </header>
+
+    <section class="section">
+      <h2>Remove elements</h2>
+      <ul id="removeSelectorsList" class="rules-list"></ul>
+      <div class="input-group">
+        <label for="newRemoveSelector">Selector of an element (querySelector)</label>
+        <input type="text" id="newRemoveSelector" placeholder="z.B. #cookie-banner, .consent-modal">
+        <button id="addRemoveSelector" class="btn btn-add">+</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>CSS-Overrides</h2>
+      <ul id="cssOverridesList" class="rules-list"></ul>
+      <div class="input-group css-override-inputs">
+        <label for="cssSelector">CSS Selector</label>
+        <input type="text" id="cssSelector" placeholder="Selector (z.B. body)">
+
+        <label for="cssProperty">CSS Property</label>
+        <input type="text" id="cssProperty" placeholder="Property (z.B. overflow)">
+
+        <label for="cssValue">CSS Value</label>
+        <input type="text" id="cssValue" placeholder="Value (z.B. auto)">
+
+        <button id="addCssOverride" class="btn btn-add">+</button>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button id="reloadPage" class="btn btn-reload">Reload page to apply changes</button>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
