@@ -25,3 +25,15 @@ you might want to use this tool in combination with other privacy tools like uBl
 [x] Custom styles for elements
 [ ] Support for more browsers
 [ ] predefined rules for popular cookie consent managers
+[ ] Option to select elements by mouse click
+
+## Predefined rules for popular cookie consent managers
+### Sourcepoint
+- "#sp_message_container_[RANDOM_ID]" for "Sourcepoint"
+
+### Cookiebot
+- "#CybotCookiebotDialog" for Cookiebot
+
+### Usercentrics
+- "#usercentrics-root" for UserCentrics
+- sets class "overflowHidden" on body to avoid scrolling by script with id="uc-overflow-style"
