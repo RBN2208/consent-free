@@ -27,8 +27,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["predefined-rules.js", "content.js"],
-      "run_at": "document_idle"
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ]
 }

@@ -1,26 +1,13 @@
 const api = typeof browser !== 'undefined' ? browser : chrome;
 
-// Predefined presets (must match predefined-rules.js)
-const PRESETS = [
-  { id: 'cookiebot', name: 'Cookiebot' },
-  { id: 'sourcepoint', name: 'Sourcepoint' },
-  { id: 'usercentrics', name: 'Usercentrics' },
-  { id: 'onetrust', name: 'OneTrust' },
-  { id: 'quantcast', name: 'Quantcast Choice' }
-];
-
 let currentDomain = '';
 let domainRules = {
   removeSelectors: [],
-  cssOverrides: [],
-  matchedPresets: [],
-  disabledPresets: []
+  cssOverrides: []
 };
 
 const elements = {
   currentDomain: document.getElementById('currentDomain'),
-  presetsList: document.getElementById('presetsList'),
-  noPresetsMessage: document.getElementById('noPresetsMessage'),
   removeSelectorsList: document.getElementById('removeSelectorsList'),
   newRemoveSelector: document.getElementById('newRemoveSelector'),
   addRemoveSelector: document.getElementById('addRemoveSelector'),
@@ -50,74 +37,18 @@ async function loadRules() {
   if (result[currentDomain]) {
     domainRules = {
       removeSelectors: result[currentDomain].removeSelectors || [],
-      cssOverrides: result[currentDomain].cssOverrides || [],
-      matchedPresets: result[currentDomain].matchedPresets || [],
-      disabledPresets: result[currentDomain].disabledPresets || []
+      cssOverrides: result[currentDomain].cssOverrides || []
     };
   } else {
     domainRules = {
       removeSelectors: [],
-      cssOverrides: [],
-      matchedPresets: [],
-      disabledPresets: []
+      cssOverrides: []
     };
   }
 }
 
 async function saveRules() {
   await api.storage.sync.set({ [currentDomain]: domainRules });
-}
-
-function renderPresets() {
-  const list = elements.presetsList;
-  list.innerHTML = '';
-
-  const matchedPresets = domainRules.matchedPresets || [];
-  const disabledPresets = domainRules.disabledPresets || [];
-
-  if (matchedPresets.length === 0) {
-    elements.noPresetsMessage.style.display = 'block';
-    list.style.display = 'none';
-    return;
-  }
-
-  elements.noPresetsMessage.style.display = 'none';
-  list.style.display = 'block';
-
-  matchedPresets.forEach(presetId => {
-    const preset = PRESETS.find(p => p.id === presetId);
-    if (!preset) return;
-
-    const isDisabled = disabledPresets.includes(presetId);
-    const li = document.createElement('li');
-    li.className = `preset-item ${isDisabled ? 'disabled' : 'active'}`;
-    li.innerHTML = `
-      <span class="preset-name">${escapeHtml(preset.name)}</span>
-      <span class="preset-status">${isDisabled ? '✗' : '✓'}</span>
-      <button class="btn-toggle" data-preset-id="${presetId}">
-        ${isDisabled ? 'Enable' : 'Disable'}
-      </button>
-    `;
-    list.appendChild(li);
-  });
-
-  list.querySelectorAll('.btn-toggle').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const presetId = e.target.dataset.presetId;
-      await togglePreset(presetId);
-    });
-  });
-}
-
-async function togglePreset(presetId) {
-  const index = domainRules.disabledPresets.indexOf(presetId);
-  if (index === -1) {
-    domainRules.disabledPresets.push(presetId);
-  } else {
-    domainRules.disabledPresets.splice(index, 1);
-  }
-  await saveRules();
-  renderPresets();
 }
 
 function renderRemoveSelectors() {
@@ -207,15 +138,12 @@ async function addCssOverride() {
   const property = elements.cssProperty.value.trim();
   const value = elements.cssValue.value.trim();
 
-  if (!selector || !property || !value) {
-    alert('Bitte alle Felder ausfüllen');
-    return;
-  }
+  if (!selector || !property || !value) return;
 
   try {
     document.querySelector(selector);
   } catch (e) {
-    alert('Ungültiger CSS-Selector');
+    alert('Invalid CSS-Selector');
     return;
   }
 
@@ -228,7 +156,7 @@ async function addCssOverride() {
   elements.cssValue.value = '';
 }
 
-async function reloadCurrentPage() {
+async function reloadCurrentTab() {
   const tabs = await api.tabs.query({ active: true, currentWindow: true });
   if (tabs[0]) {
     await api.tabs.reload(tabs[0].id);
@@ -236,31 +164,31 @@ async function reloadCurrentPage() {
   }
 }
 
-elements.addRemoveSelector.addEventListener('click', addRemoveSelector);
-elements.newRemoveSelector.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') addRemoveSelector();
-});
-
-elements.addCssOverride.addEventListener('click', addCssOverride);
-elements.cssValue.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') addCssOverride();
-});
-
-elements.reloadPage.addEventListener('click', reloadCurrentPage);
-
 async function init() {
   currentDomain = await getCurrentDomain();
 
   if (!currentDomain) {
-    elements.currentDomain.textContent = 'No valid url';
+    elements.currentDomain.textContent = 'Unknown page';
     return;
   }
 
   elements.currentDomain.textContent = currentDomain;
+
   await loadRules();
-  renderPresets();
   renderRemoveSelectors();
   renderCssOverrides();
+
+  elements.addRemoveSelector.addEventListener('click', addRemoveSelector);
+  elements.newRemoveSelector.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') addRemoveSelector();
+  });
+
+  elements.addCssOverride.addEventListener('click', addCssOverride);
+  elements.cssValue.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') addCssOverride();
+  });
+
+  elements.reloadPage.addEventListener('click', reloadCurrentTab);
 }
 
-init();
+document.addEventListener('DOMContentLoaded', init);

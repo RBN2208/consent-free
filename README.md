@@ -18,23 +18,13 @@ you might want to use this tool in combination with other privacy tools like uBl
 - Add more blocking options (e.g., specific scripts, iframes)
 - Improve the user interface for configuration
 - Add support for more browsers
-- enable script blocking via configuration
 
 ## Feature list
 [x] Block consent pop-ups
 [x] Custom styles for elements
 [ ] Support for more browsers
-[x] predefined rules for popular cookie consent managers
+[ ] predefined rules for popular cookie consent managers
+-- this only works partially, as many sites use custom implementations
+e.g. "bild.de" uses a custom implementation that is not covered by predefined rules as there adblocker detections breaks the
+page for automatic blocking
 [ ] Option to select elements by mouse click
-[ ] debug specific pages: e.g. bild.de detects this script? and breaks the page, defaulting to a white page
-
-## Predefined rules for popular cookie consent managers
-### Sourcepoint
-- "#sp_message_container_[RANDOM_ID]" for "Sourcepoint"
-
-### Cookiebot
-- "#CybotCookiebotDialog" for Cookiebot
-
-### Usercentrics
-- "#usercentrics-root" for UserCentrics
-- sets class "overflowHidden" on body to avoid scrolling by script with id="uc-overflow-style"
